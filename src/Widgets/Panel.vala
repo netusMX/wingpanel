@@ -21,8 +21,10 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
     public Services.PopoverManager popover_manager { get; construct; }
 
     private IndicatorMenuBar right_menubar;
-    private Gtk.MenuBar left_menubar;
+    private Gtk.Grid left_menubar;
     private Gtk.MenuBar center_menubar;
+
+    private Appmenu.MenuWidget global_menu = new Appmenu.MenuWidget();
 
     private unowned Gtk.StyleContext style_context;
     private Gtk.CssProvider? style_provider = null;
@@ -44,7 +46,7 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
         vexpand = true;
         valign = Gtk.Align.START;
 
-        left_menubar = new Gtk.MenuBar () {
+        left_menubar = new Gtk.Grid () {
             can_focus = true,
             halign = Gtk.Align.START
         };
@@ -83,6 +85,17 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
         style_context.add_provider (resource_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         Services.BackgroundManager.get_default ().background_state_changed.connect (update_background);
+
+        var granite_settings = Granite.Settings.get_default ();
+        var gtk_settings = Gtk.Settings.get_default ();
+
+        gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+
+        granite_settings.notify["prefers-color-scheme"].connect (() => {
+            gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+        });
+
+        left_menubar.attach (global_menu, 1, 0, 1, 1);
     }
 
     public override bool button_press_event (Gdk.EventButton event) {
@@ -247,13 +260,9 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
         var indicator_entry = new IndicatorEntry (indicator, popover_manager);
 
         switch (indicator.code_name) {
-            case Indicator.APP_LAUNCHER:
+            case Indicator.SESSION:
                 indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_RIGHT);
-                left_menubar.add (indicator_entry);
-                break;
-            case Indicator.DATETIME:
-                indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_DOWN);
-                center_menubar.add (indicator_entry);
+                left_menubar.attach (indicator_entry, 0, 0, 1, 1);
                 break;
             default:
                 indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_LEFT);
@@ -302,30 +311,35 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
 
         switch (state) {
             case Services.BackgroundState.DARK :
+                global_menu.toggle_dark_mode(true);
                 style_context.add_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("maximized");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.LIGHT:
+                global_menu.toggle_dark_mode(false);
                 style_context.add_class ("color-dark");
                 style_context.remove_class ("color-light");
                 style_context.remove_class ("maximized");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.MAXIMIZED:
+                global_menu.toggle_dark_mode(false);
                 style_context.add_class ("maximized");
                 style_context.remove_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.TRANSLUCENT_DARK:
+                global_menu.toggle_dark_mode(false);
                 style_context.add_class ("translucent");
                 style_context.add_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("maximized");
                 break;
             case Services.BackgroundState.TRANSLUCENT_LIGHT:
+            global_menu.toggle_dark_mode(true);
                 style_context.add_class ("translucent");
                 style_context.add_class ("color-dark");
                 style_context.remove_class ("color-light");
