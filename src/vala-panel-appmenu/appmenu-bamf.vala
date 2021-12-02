@@ -36,6 +36,17 @@ namespace Appmenu
         }
         if (title == null && app != null)
             title = app.get_name();
+        switch(title) {
+            case "Visual Studio Code": 
+                title = "Code";
+                break;
+            case "Brave Web Browser":
+                title = "Brave";
+                break;
+            case "Google Chrome":
+                title = "Chrome";
+                break;
+        }
         return new DBusMenuHelper(w,name,path,title,info);
     }
     MenuModelHelper get_menu_model_helper_with_bamf(MenuWidget w, Bamf.Window window, Bamf.Application? app)
