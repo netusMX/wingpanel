@@ -31,6 +31,19 @@ gdk_x11_dep = dependency('gdk-x11-3.0')
 gtk_dep = dependency('gtk+-3.0', version: '>=3.10')
 gee_dep = dependency('gee-0.8')
 granite_dep = dependency('granite', version: '>=5.4.0')
+gdkpixbuf_dep = dependency('gdk-pixbuf-2.0', required: false)
+bamf_ver = '>=0.5.0'
+bamf_dep = dependency('libbamf3', version: bamf_ver, required: true)
+
+#################
+# Configuration #
+#################
+conf_data = configuration_data()
+conf_data.set('GETTEXT_PACKAGE', meson.project_name())
+
+config = configure_file(input : join_paths('vapi','config.vala.in'),
+               output : 'config.vala',
+			   configuration : conf_data)
 
 subdir('data')
 subdir('lib')

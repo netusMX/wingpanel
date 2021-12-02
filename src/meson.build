@@ -1,3 +1,4 @@
+subdir('vala-panel-appmenu')
 wingpanel_files = files(
     'PanelWindow.vala',
     'SessionManager.vala',
@@ -14,6 +15,7 @@ wingpanel_files = files(
 )
 
 wingpanel_deps = [
+    appmenu_dep,
     libwingpanel_dep,
     granite_dep,
     gdk_x11_dep
@@ -22,6 +24,7 @@ wingpanel_deps = [
 executable(meson.project_name(),
     css_gresource,
     wingpanel_files,
+    libres,
     dependencies: wingpanel_deps,
     install: true
 )

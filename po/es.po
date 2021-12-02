@@ -16,6 +16,65 @@ msgstr ""
 #: src/Application.vala:175
 msgid "A super sexy space-saving top panel"
 msgstr "Un atractivo panel superior que ahorra espacio"
+#: src/vala-panel-appmenu/appmenu-desktop.vala:39
+msgid "_Desktop"
+msgstr "Escritorio"
+#: src/vala-panel-appmenu/appmenu-desktop.vala:153
+msgid "No files"
+msgstr "Sin archivos"
+
+#: src/vala-panel-appmenu/appmenu-bamf.vala:37
+msgid "_New Window..."
+msgstr "Nueva ventana"
+
+#: src/vala-panel-appmenu/appmenu-bamf.vala:38
+msgid "Close _This"
+msgstr "Cerrar _Esto"
+
+#: src/vala-panel-appmenu/appmenu-bamf.vala:39
+msgid "Close _All"
+msgstr "Cerrar Todo"
+
+#: src/vala-panel-appmenu/menu-widget-menumodel.vala:42
+msgid "_Application"
+msgstr "Aplicación"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:6
+msgid "_Desktop Settings"
+msgstr "Configuración del Escritorio"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:10
+msgid "_System Settings"
+msgstr "Configuración del Sistema"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:17
+msgid "_Files"
+msgstr "Descargas"
+
+
+
+
+#: src/vala-panel-appmenu/desktop-menus.ui:21
+msgid "_Documents"
+msgstr "Documentos"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:25
+msgid "_Music"
+msgstr "Música"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:29
+msgid "_Pictures"
+msgstr "Imágenes"
+
+#: src/vala-panel-appmenu/desktop-menus.ui:33
+msgid "_Video"
+msgstr "Videos"
+
+msgid "_New"
+msgstr "Nuevo"
+
+msgid "_Quit"
+msgstr "Salir"
 
 #~ msgid "System Panel"
 #~ msgstr "Panel del sistema"
