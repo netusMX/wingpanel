@@ -41,7 +41,7 @@ pkg.generate(
     description: 'Wingpanel Indicators API',
     version: meson.project_version(),
     subdirs: 'wingpanel',
-    variables: ['indicatorsdir=${libdir}/wingpanel'],
+    variables: ['indicatorsdir=${libdir}'],
     requires: libwingpanel_deps
 )
 
