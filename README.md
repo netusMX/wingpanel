@@ -15,6 +15,7 @@ You'll need the following dependencies:
 * meson
 * libmutter-2-dev
 * valac
+* cmake
 
 Run `meson` to configure the build environment and then `ninja` to build
 
