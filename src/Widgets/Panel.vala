@@ -21,11 +21,12 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
     public Services.PopoverManager popover_manager { get; construct; }
 
     private IndicatorMenuBar right_menubar;
-    private Gtk.MenuBar left_menubar;
-    private Gtk.MenuBar center_menubar;
+    private Gtk.Grid left_menubar;
 
     private unowned Gtk.StyleContext style_context;
     private Gtk.CssProvider? style_provider = null;
+
+    private Appmenu.MenuWidget global_menu = new Appmenu.MenuWidget ();
 
     private static Gtk.CssProvider resource_provider;
 
@@ -44,16 +45,12 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
         vexpand = true;
         valign = Gtk.Align.START;
 
-        left_menubar = new Gtk.MenuBar () {
+        left_menubar = new Gtk.Grid () {
             can_focus = true,
             halign = Gtk.Align.START
         };
         left_menubar.get_style_context ().add_provider (resource_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-        center_menubar = new Gtk.MenuBar () {
-            can_focus = true
-        };
-        center_menubar.get_style_context ().add_provider (resource_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        left_menubar.attach (global_menu, 1, 0, 1, 1);
 
         right_menubar = new IndicatorMenuBar () {
             can_focus = true,
@@ -63,7 +60,6 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
 
         var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         box.pack_start (left_menubar);
-        box.set_center_widget (center_menubar);
         box.pack_end (right_menubar);
 
         add (box);
@@ -146,26 +142,6 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
                     break;
                 } else if (index < children.length () - 1) { // Has more than one indicator in the left menubar
                     sibling = children.nth_data (index + 1) as IndicatorEntry;
-                } else { // No more indicators on the left
-                    var center_children = center_menubar.get_children ();
-                    if (center_children.length () > 0) {
-                        sibling = center_children.first ().data as IndicatorEntry;
-                    }
-                }
-
-                break;
-            case Indicator.DATETIME:
-                var children = center_menubar.get_children ();
-                int index = children.index (current);
-                if (index == -1) {
-                    break;
-                } else if (index < children.length () - 1) { // Has more than one indicator in the center menubar
-                    sibling = children.nth_data (index + 1) as IndicatorEntry;
-                } else { // No more indicators on the center
-                    var right_children = right_menubar.get_children ();
-                    if (right_children.length () > 0) {
-                        sibling = right_children.first ().data as IndicatorEntry;
-                    }
                 }
 
                 break;
@@ -208,21 +184,6 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
                 }
 
                 break;
-            case Indicator.DATETIME:
-                var children = center_menubar.get_children ();
-                int index = children.index (current);
-                if (index == -1) {
-                    break;
-                } else if (index != 0) { // Is not the first indicator in the center menubar
-                    sibling = children.nth_data (index - 1) as IndicatorEntry;
-                } else { // No more indicators on the center
-                    var left_children = left_menubar.get_children ();
-                    if (left_children.length () > 0) {
-                        sibling = left_children.last ().data as IndicatorEntry;
-                    }
-                }
-
-                break;
             default:
                 var children = right_menubar.get_children ();
                 int index = children.index (current);
@@ -230,11 +191,6 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
                     break;
                 } else if (index != 0) { // Is not the first indicator in the right menubar
                     sibling = children.nth_data (index - 1) as IndicatorEntry;
-                } else { // No more indicators on the right
-                    var center_children = center_menubar.get_children ();
-                    if (center_children.length () > 0) {
-                        sibling = center_children.last ().data as IndicatorEntry;
-                    }
                 }
 
                 break;
@@ -247,13 +203,9 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
         var indicator_entry = new IndicatorEntry (indicator, popover_manager);
 
         switch (indicator.code_name) {
-            case Indicator.APP_LAUNCHER:
+            case Indicator.SESSION:
                 indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_RIGHT);
-                left_menubar.add (indicator_entry);
-                break;
-            case Indicator.DATETIME:
-                indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_DOWN);
-                center_menubar.add (indicator_entry);
+                left_menubar.attach (indicator_entry, 0, 0, 1, 1);
                 break;
             default:
                 indicator_entry.set_transition_type (Gtk.RevealerTransitionType.SLIDE_LEFT);
@@ -266,7 +218,6 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
 
     private void remove_indicator (Indicator indicator) {
         remove_indicator_from_container (left_menubar, indicator);
-        remove_indicator_from_container (center_menubar, indicator);
         remove_indicator_from_container (right_menubar, indicator);
     }
 
@@ -302,30 +253,35 @@ public class Wingpanel.Widgets.Panel : Gtk.EventBox {
 
         switch (state) {
             case Services.BackgroundState.DARK :
+                global_menu.toggle_dark_mode (true);
                 style_context.add_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("maximized");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.LIGHT:
+                global_menu.toggle_dark_mode (false);
                 style_context.add_class ("color-dark");
                 style_context.remove_class ("color-light");
                 style_context.remove_class ("maximized");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.MAXIMIZED:
+                global_menu.toggle_dark_mode (false);
                 style_context.add_class ("maximized");
                 style_context.remove_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("translucent");
                 break;
             case Services.BackgroundState.TRANSLUCENT_DARK:
+                global_menu.toggle_dark_mode (false);
                 style_context.add_class ("translucent");
                 style_context.add_class ("color-light");
                 style_context.remove_class ("color-dark");
                 style_context.remove_class ("maximized");
                 break;
             case Services.BackgroundState.TRANSLUCENT_LIGHT:
+                global_menu.toggle_dark_mode (true);
                 style_context.add_class ("translucent");
                 style_context.add_class ("color-dark");
                 style_context.remove_class ("color-light");

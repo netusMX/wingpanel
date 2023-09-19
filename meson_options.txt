@@ -1,1 +1,10 @@
 option('example', type: 'boolean', value: false, description: 'Build an example that shows how it works')
+option('wm_backend', type: 'combo', choices: ['auto','wnck','bamf'], value: 'auto', description: 'Backend for appmenu')
+option('valapanel', type: 'feature', value: 'auto', description: 'Vala Panel Integration - 0.5.x')
+option('xfce', type: 'feature', value: 'auto', description: 'Xfce Panel Integration')
+option('mate', type: 'feature', value: 'auto', description: 'MATE Panel Integration')
+option('budgie', type: 'feature', value: 'auto', description: 'Budgie Desktop Integration')
+
+option('registrar', type: 'feature', value: 'auto', description: 'DBusMenu registrar')
+option('appmenu-gtk-module', type: 'feature', value: 'auto', description: 'Gtk+ module for AppMenu')
+option('jayatana', type: 'feature', value: 'auto', description: 'Java support for global menus')

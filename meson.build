@@ -18,6 +18,15 @@ add_project_arguments([
     language: 'c'
 )
 
+am_cflags = [
+    '-fstack-protector',
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+]
+add_project_arguments(am_cflags, language: 'c')
+
+vapi_dir = join_paths(meson.current_source_dir(), 'vapi')
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
+
 i18n = import('i18n')
 gnome = import('gnome')
 pkg = import('pkgconfig')

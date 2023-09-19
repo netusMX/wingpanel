@@ -15,6 +15,11 @@ You'll need the following dependencies:
 * meson
 * libmutter-2-dev
 * valac
+* cmake
+* gtk2.0
+
+Run the following before starting to compile:
+sudo apt install elementary-sdk cmake gtk2.0
 
 Run `meson` to configure the build environment and then `ninja` to build
 
